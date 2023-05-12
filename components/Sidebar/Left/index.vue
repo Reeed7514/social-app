@@ -31,16 +31,6 @@
 
 			<SidebarLeftTab>
 				<template v-slot:icon>
-					<BellIcon />
-				</template>
-				<template v-slot:name>
-					Notifications
-				</template>
-			</SidebarLeftTab>
-
-
-			<SidebarLeftTab>
-				<template v-slot:icon>
 					<InboxIcon />
 				</template>
 				<template v-slot:name>
@@ -96,7 +86,7 @@
 
 		<div @click="emits('onLogout')"
 			class="self-end flex flex-row items-center justify-center px-2 py-2 mx-auto mt-auto mb-5 rounded-full cursor-pointer w-14 xl:w-full hover:bg-gray-100 dark:hover:bg-dim-800"
-			:class="defaultTransition" >
+			:class="defaultTransition">
 
 			<div class="flex flex-row">
 				<img :src="props.user.profileImage" class="w-10 h-10 rounded-full">
@@ -126,7 +116,7 @@
 
 <script setup>
 import { HomeIcon } from '@heroicons/vue/24/solid';
-import { HashtagIcon, BellIcon, InboxIcon, BookmarkIcon, DocumentTextIcon, UserIcon, PencilIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
+import { HashtagIcon, InboxIcon, BookmarkIcon, DocumentTextIcon, UserIcon, PencilIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
 
 
 const props = defineProps({
