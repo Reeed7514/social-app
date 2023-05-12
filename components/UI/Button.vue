@@ -1,0 +1,57 @@
+<template>
+	<button
+		class="flex justify-center text-white bg-blue-400 rounded-full hover:bg-blue-500 font-sm disabled:bg-blue-300 disabled:cursor-not-allowed"
+		:disabled="props.disabled" :class="classes" @click="handleClick">
+		<span :class="textFontSize">
+			<slot />
+		</span>
+	</button>
+</template>
+
+<script setup>
+const props = defineProps({
+	disabled: {
+		type: Boolean,
+		default: false
+	},
+	// dynamic classes, size wise
+	size: {
+		type: String,
+		default: 'md'
+	},
+	liquid: {
+		type: Boolean,
+		default: false
+	}
+})
+
+const emits = defineEmits(['onClick']);
+
+const paddingClasses = computed(() => {
+	switch (props.size) {
+		case 'sm':
+			return 'py-2 px-3'
+		case 'lg':
+			return 'px-4 py-3'
+		default:
+			return 'px-3 py-3'
+	}
+})
+
+const textFontSize = computed(() => {
+	switch (props.size) {
+		case 'lg':
+			return 'text-md'
+		default:
+			return 'text-sm'
+	}
+})
+
+
+const classes = computed(() => `${paddingClasses.value} ${props.liquid ? 'w-full' : 'w-min'}`);
+
+function handleClick(event) {
+	emits('onClick', event);
+}
+
+</script>
