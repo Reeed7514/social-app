@@ -31,6 +31,12 @@ export default defineEventHandler(async (event) => {
 		tweetData.replyToId = replyToId;
 	}
 
+	let quoteTweetId = fields.quoteTweetId
+
+	if (quoteTweetId && quoteTweetId !== 'null' && quoteTweetId !== 'undefined') {
+		tweetData.quoteTweetId = quoteTweetId
+	}
+
 	const tweet = await createTweet(tweetData);
 
 	// upload the media files to cloudinary and save the id&url into db

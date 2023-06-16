@@ -54,13 +54,35 @@ export default () => {
 		})
 	}
 
+	const register = ({ username, email, password, repeatPassword, name }) => {
+		return new Promise(async (resolve, reject) => {
+			try {
+				// you cant do useFetch here
+				await $fetch('/api/auth/register', {
+					method: 'POST',
+					body: {
+						username,
+						email,
+						password,
+						repeatPassword,
+						name
+					}
+				})
+
+				resolve(true);
+			} catch (error) {
+				reject(error);
+			}
+		})
+	}
+
 	const refreshToken = () => {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const { access_token, expired } = await $fetch('/api/auth/refresh');
 
-				if(expired) reject('refresh token expired');
-				
+				if (expired) reject('refresh token expired');
+
 				setToken(access_token);
 				resolve(true);
 			} catch (error) {
@@ -123,6 +145,7 @@ export default () => {
 
 	return {
 		login,
+		register,
 		initAuth,
 		useAuthUser,
 		useAuthToken,

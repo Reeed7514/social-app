@@ -7,8 +7,8 @@
 		</div>
 		<div v-else v-for="tweet in props.tweets" :key="tweet.id" @click="redirect(tweet)"
 			:class="[twitterBorderColor, defaultTransition]"
-			class="py-2 border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-dim-300">
-			<TweetItem :tweet="tweet" compact />
+			class="px-4 pt-3 pb-1 border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-dim-300">
+			<TweetItem :tweet="tweet" />
 		</div>
 	</div>
 </template>

@@ -48,7 +48,12 @@ model Tweet {
 
   replyTo   Tweet?  @relation("replies", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replyToId String? @db.ObjectId
+  // find all tweets that have a replyToId that matches the id of current Tweet
   replies   Tweet[] @relation("replies")
+
+  quote   Tweet?  @relation("quotes", fields: [quoteTweetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  quoteTweetId String? @db.ObjectId
+  quotedBy  Tweet[] @relation("quotes")
 
   // this is to disambiguate relations
   // ratioTo   Tweet?  @relation("ratios", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)

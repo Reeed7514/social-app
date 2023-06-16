@@ -1,3 +1,4 @@
+
 export default () => {
 
 	const usePostTweetModal = () => useState('post_tweet_modal', () => false)
@@ -5,9 +6,18 @@ export default () => {
 	// the tweet you want to reply to
 	const useReplyTweet = () => useState('reply_tweet', () => null)
 
+	const useQuoteTweet = () => useState('quote_tweet', () => null)
+
 	const setReplyTo = (tweet) => {
 		const replyTweet = useReplyTweet()
 		replyTweet.value = tweet
+
+	}
+
+	const setQuoteTweet = (tweet) => {
+		const quoteTweet = useQuoteTweet()
+		quoteTweet.value = tweet
+
 	}
 
 	const postTweet = (formData) => {
@@ -17,6 +27,8 @@ export default () => {
 		form.append('text', formData.text);
 
 		form.append('replyToId', formData.replyToId);
+
+		form.append('quoteTweetId', formData.quoteTweetId);
 
 		formData.mediaFiles.forEach((mediaFile, index) => {
 			form.append('media_file_' + index, mediaFile);
@@ -44,6 +56,8 @@ export default () => {
 		})
 	}
 
+
+
 	const getTweetById = (tweetId) => {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -61,11 +75,25 @@ export default () => {
 		postTweetModal.value = false;
 	}
 
-	const openPostTweetModal = (tweet = null) => {
+	const openPostTweetModal = () => {
+		const postTweetModal = usePostTweetModal();
+		postTweetModal.value = true;
+	}
+
+	const openPostTweetModalToReply = (tweet = null) => {
 		const postTweetModal = usePostTweetModal();
 		postTweetModal.value = true;
 
-		setReplyTo(tweet);
+		setQuoteTweet(null)
+		setReplyTo(tweet)
+	}
+
+	const openPostTweetModalToQuote = (tweet = null) => {
+		const postTweetModal = usePostTweetModal();
+		postTweetModal.value = true;
+
+		setReplyTo(null)
+		setQuoteTweet(tweet)
 	}
 
 	return {
@@ -74,7 +102,10 @@ export default () => {
 		getTweetById,
 		usePostTweetModal,
 		openPostTweetModal,
+		openPostTweetModalToQuote,
+		openPostTweetModalToReply,
 		closePostTweetModal,
-		useReplyTweet
+		useReplyTweet,
+		useQuoteTweet
 	}
 }

@@ -10,7 +10,13 @@ export default defineEventHandler(async (event) => {
 		include: {
 			// author does not exist on this collection so we have to include it using the relationship we defined
 			author: true,
+			
 			replyTo: {
+				include: {
+					author: true
+				}
+			},
+			quote: {
 				include: {
 					author: true
 				}
@@ -20,6 +26,11 @@ export default defineEventHandler(async (event) => {
 					author: true,
 				}
 			},
+			quotedBy: {
+				include: {
+					author: true
+				}
+			},
 			mediaFiles: true
 		},
 		orderBy: {
@@ -27,7 +38,7 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
-	if(!!search){
+	if (!!search) {
 		prismaQuery = {
 			...prismaQuery,
 			where: {

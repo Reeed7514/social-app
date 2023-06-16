@@ -1,16 +1,16 @@
 <template>
 	<!-- you can use group -->
-	<div @click.stop.prevent="emits('onClick')" class="flex items-center text-gray-400 cursor-pointer group">
-		<div
-			:class="`p-2 rounded-full group-hover:bg-${props.color}-100 group-hover:text-${props.color}-400 dark:group-hover:bg-opacity-20 ${defaultTransition}`">
+	<div @click.stop.prevent="emits('onClick')" class="flex items-center text-gray-500 cursor-pointer group">
+		<div class="flex items-center justify-center rounded-full h-8 w-8 dark:group-hover:bg-opacity-20"
+			:class="`group-hover:bg-${props.color}-100 group-hover:text-${props.color}-400 ${defaultTransition}`">
 			<!-- the classes attribute has info related to props in this component 
 				and we can pass this attribute to the element that is going to take this slot  -->
-			<slot name="icon" :classes="`w-${props.size} h-${props.size}`" />
+			<slot name="icon" />
 		</div>
 
-		<span :class="`group-hover:text-${props.color}-400`">
+		<div :class="`group-hover:text-${props.color}-400`" class="ml-1 text-sm">
 			<slot />
-		</span>
+		</div>
 	</div>
 </template>
 
@@ -18,10 +18,6 @@
 const props = defineProps({
 	color: {
 		type: String,
-		required: true
-	},
-	size: {
-		type: Number,
 		required: true
 	}
 })

@@ -7,7 +7,7 @@
 					Home / Twitter
 				</Title>
 			</Head>
-			<div class="border-b" :class="twitterBorderColor">
+			<div class="p-4 border-b" :class="twitterBorderColor">
 				<TweetForm :user="user" @on-success="handleFormSuccess" />
 			</div>
 			<TweetListFeed :tweets="homeTweets" />

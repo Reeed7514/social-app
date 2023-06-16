@@ -7,9 +7,11 @@
 					Tweet
 				</Title>
 			</Head>
-
+			
 			<TweetDetails :user="user" :tweet="tweet" />
+
 		</MainSection>
+
 	</div>
 </template>
 

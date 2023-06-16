@@ -1,22 +1,68 @@
 <template>
 	<div>
-		<TweetItemHeader :tweet="tweet" />
+		<div class="flex gap-3">
 
-		<div :class="wrapperClasses">
+			<div class="flex flex-col items-center gap-2">
+				<img class="w-10 h-10 rounded-full object-cover" :src="props.tweet.author.profileImage">
 
-			<p class="flex-shrink w-auto font-medium text-gray-800 dark:text-white" :class="textSize">
-				{{ props.tweet.text }}
-			</p>
+				<div v-if="props.showThread" class="bg-gray-300 flex-1 w-[2px] rounded-sm"></div>
+			</div>
 
-			<div v-for="image in tweet.mediaFiles" :key="image.id" class="flex my-3 mr-2 border-2 rounded-2xl"
-				:class="twitterBorderColor">
-				<img :src="image.url" class="w-full rounded-2xl">
+			<div class="flex-1">
+				<div class="flex items-center gap-1">
+					<p class="font-semibold text-gray-800 cursor-pointer dark:text-white hover:underline">{{ props.tweet.author.name }}</p>
+
+					<p class="text-gray-400">
+						<!-- TODO profile -->
+						{{ props.tweet.author.handle }}
+					</p>
+
+					<p class="rounded-full bg-gray-400 w-1 h-1"></p>
+
+					<p class="text-gray-400">
+						{{ props.tweet.postedAt }}
+					</p>
+
+
+				</div>
+
+
+				<!-- reply to some tweet -->
+				<div v-if="props.tweet.replyTo && props.onProfile" class="mb-1">
+					<span class="text-gray-500">
+						Replying to
+					</span>
+
+					<nuxt-link :to="replyToTweetUrl" class="text-blue-400">
+						{{ props.tweet.replyTo.author.handle }}
+					</nuxt-link>
+				</div>
+
+				<p class="w-full text-gray-800 dark:text-white">
+					{{ props.tweet.text }}
+				</p>
+
+				<div v-for="image in props.tweet.mediaFiles" :key="image.id" class="flex border-2 rounded-2xl mt-2"
+					:class="twitterBorderColor">
+					<img :src="image.url" class="w-full rounded-lg">
+				</div>
+
+
+				<!-- quote tweet -->
+				<div v-if="props.tweet.quote" @click.stop="redirect(props.tweet.quote)" :class="twitterBorderColor" class="border rounded-md p-2 hover:bg-gray-200 dark:hover:bg-dim-300 mt-1" >
+					<TweetQuote :tweet="props.tweet.quote" />
+				</div>
+
+				<!-- if we want to reply to this tweet in the modal, then dont show the action icons -->
+				<div v-if="!props.noActions" class="-ml-2">
+					<TweetItemActions :tweet="props.tweet" compact />
+				</div>
+
 			</div>
 
 		</div>
-		<div v-if="!props.hideActions" class="mt-2 mx-14">
-			<TweetItemActions :tweet="props.tweet" :compact="props.compact" @on-comment-click="handleCommentClick"/>
-		</div>
+
+
 	</div>
 </template>
 
@@ -26,28 +72,29 @@ const props = defineProps({
 		type: Object,
 		required: true
 	},
-	compact: {
+	showThread: {
 		type: Boolean,
 		default: false
 	},
-	hideActions: {
+	noActions: {
+		type: Boolean,
+		default: false
+	},
+	onProfile: {
 		type: Boolean,
 		default: false
 	}
 })
 
-const emits = defineEmits(['replyTweet'])
-
-const emitter = useEmitter();
 
 const { twitterBorderColor } = useTailwindConfig();
 
-const wrapperClasses = computed(() => props.compact ? 'ml-16' : 'ml-4 mt-4');
+const replyToTweetUrl = computed(() => `/status/${props.tweet.replyTo.id}`)
 
-const textSize = computed(() => props.compact ? 'text-base' : 'text-2xl');
 
-// use emitter from mitt to emit the event directly to app.vue
-function handleCommentClick(){
-	emitter.$emit('replyTweet', props.tweet)
+async function redirect(tweet) {
+	await navigateTo({
+		path: `/status/${tweet.id}`
+	})
 }
 </script>

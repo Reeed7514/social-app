@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ 'dark': darkMode }">
+	<div class="font-Roboto" :class="{ 'dark': darkMode }">
 		<div class="bg-white dark:bg-dim-900">
 			<!-- loading auth -->
 			<LaodingPage v-if="isAuthLoading" />
@@ -30,20 +30,50 @@
 			<AuthPage v-else />
 
 			<UIModal :is-open="postTweetModal" @on-close="handleModalClose">
+				<!-- if its a reply -->
+				<div v-if="replyTweet">
+					<TweetItem :tweet="replyTweet" showThread noActions />
+					<!-- thread line -->
+					<div class="flex items-center gap-3">
+						<!-- thread line -->
+						<div class="w-10 h-10 flex justify-center">
+							<div class="bg-gray-300 w-[2px] h-8 rounded-sm"></div>
+						</div>
 
-				<TweetForm :replyTo="replyTweet" showReplyTo :user="user" @on-success="handleFormSuccess" />
+						<div class="flex gap-1">
+							<span class="text-gray-400">Replying to</span>
+							<span class="text-blue-400">{{ replyTweet.author.handle }}</span>
+						</div>
+					</div>
+				</div>
+
+				<TweetForm :placeholder="replyTweet ? 'Tweet your reply' : quoteTweet ? 'Add a comment!' : 'What is happening?!'"
+					:reply-to="replyTweet" :quote="quoteTweet" :user="user" @on-success="handleFormSuccess">
+
+					<!-- the tweet to quote -->
+					<div v-if="quoteTweet" :class="twitterBorderColor"
+						class="border rounded-md p-2 mt-2">
+
+						<TweetQuote :tweet="quoteTweet" />
+
+					</div>
+
+				</TweetForm>
 			</UIModal>
 		</div>
 	</div>
 </template>
 
 <script setup>
+
 const { useAuthUser, initAuth, useAuthLoading, logout } = useAuth();
 
 const user = useAuthUser();
 const isAuthLoading = useAuthLoading();
 
-const { usePostTweetModal, closePostTweetModal, openPostTweetModal, useReplyTweet } = useTweets()
+const { twitterBorderColor } = useTailwindConfig()
+
+const { usePostTweetModal, closePostTweetModal, openPostTweetModal, openPostTweetModalToReply, openPostTweetModalToQuote, useReplyTweet, useQuoteTweet } = useTweets()
 
 const darkMode = ref(false);
 
@@ -51,11 +81,17 @@ const postTweetModal = usePostTweetModal()
 
 const replyTweet = useReplyTweet();
 
+const quoteTweet = useQuoteTweet();
+
 const emitter = useEmitter();
 
 // listen on the comment icon click
 emitter.$on('replyTweet', (tweet) => {
-	openPostTweetModal(tweet)
+	openPostTweetModalToReply(tweet)
+})
+
+emitter.$on('quoteTweet', (tweet) => {
+	openPostTweetModalToQuote(tweet)
 })
 
 emitter.$on('toggleDarkMode', () => darkMode.value = !darkMode.value)
@@ -79,7 +115,7 @@ function handleModalClose() {
 
 // open from sidebar, not replying to anyone
 function handleOpenTweetModal() {
-	openPostTweetModal(null)
+	openPostTweetModal()
 }
 
 async function handleUserLogout() {
