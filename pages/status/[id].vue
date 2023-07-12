@@ -8,7 +8,7 @@
 				</Title>
 			</Head>
 			
-			<TweetDetails :user="user" :tweet="tweet" />
+			<TweetDetails :tweet="tweet" />
 
 		</MainSection>
 
@@ -17,13 +17,10 @@
 
 <script setup>
 const { getTweetById } = useTweets();
-const { useAuthUser } = useAuth();
 
 const route = useRoute();
 
 const id = computed(() => route.params.id);
-
-const user = useAuthUser();
 
 const loading = ref(false);
 

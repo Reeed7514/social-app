@@ -18,6 +18,9 @@ export default () => {
 			try {
 				// you cant do useFetch here
 				const data = await useFetchApi('/api/auth/user');
+
+				// console.log('got user', data)
+
 				setUser(data.user);
 
 				resolve(true);
@@ -44,6 +47,8 @@ export default () => {
 					}
 				})
 
+				// console.log('data', data)
+
 				setToken(data.access_token);
 				setUser(data.user);
 
@@ -54,27 +59,32 @@ export default () => {
 		})
 	}
 
-	const register = ({ username, email, password, repeatPassword, name }) => {
+
+	const register = ({ username, email, password, repeatPassword, name, profileImage }) => {
+
 		return new Promise(async (resolve, reject) => {
 			try {
-				// you cant do useFetch here
+				const form = new FormData();
+
+				form.append('username', username);
+				form.append('name', name);
+				form.append('email', email);
+				form.append('password', password);
+				form.append('repeatPassword', repeatPassword);
+				form.append('profileImage', profileImage);
+
 				await $fetch('/api/auth/register', {
 					method: 'POST',
-					body: {
-						username,
-						email,
-						password,
-						repeatPassword,
-						name
-					}
+					body: form
 				})
 
-				resolve(true);
+				resolve(true)
 			} catch (error) {
-				reject(error);
+				reject(error)
 			}
 		})
 	}
+
 
 	const refreshToken = () => {
 		return new Promise(async (resolve, reject) => {
@@ -82,6 +92,8 @@ export default () => {
 				const { access_token, expired } = await $fetch('/api/auth/refresh');
 
 				if (expired) reject('refresh token expired');
+
+				// console.log('refreshed token', access_token)
 
 				setToken(access_token);
 				resolve(true);
@@ -114,6 +126,7 @@ export default () => {
 			setIsAuthLoading(true);
 			try {
 				await refreshToken();
+
 				await getUser();
 				resolve(true);
 

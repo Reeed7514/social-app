@@ -1,5 +1,6 @@
 export default ((url, options = {}) => {
-	const { useAuthToken } = useAuth();
+	const { useAuthToken } = useAuth()
+	
 	return $fetch(url, {
 		...options,
 		headers: {

@@ -38,10 +38,6 @@ module.exports = {
 					900: "#15202b",
 				},
 			},
-
-			fontFamily: {
-				Roboto: ["Roboto", "sans-serif"],
-			}
 		},
 	},
 	plugins: [

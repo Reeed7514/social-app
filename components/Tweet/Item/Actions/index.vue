@@ -3,64 +3,65 @@
 
 		<TweetItemActionsIcon color="blue" @on-click="handleReplyClick">
 			<template #icon>
-				<font-awesome-icon icon="fa-regular fa-comment" :size="size"/>
+				<font-awesome-icon icon="fa-regular fa-comment" :size="size" />
 			</template>
 
-			<template v-if="showStats">
-				{{ props.tweet.repliesCount }}
+			<template v-if="props.compact">
+				{{ tweet.repliesCount }}
 			</template>
 		</TweetItemActionsIcon>
 
 		<TweetItemActionsIcon color="green" @on-click="handleQuoteClick">
 			<!-- take the attribute that child component provides and give it to the icon -->
 			<template #icon>
-				<font-awesome-icon icon="fa-solid fa-retweet" :size="size"/>
+				<font-awesome-icon icon="fa-solid fa-retweet" :size="size" />
 			</template>
 
-			<template v-if="showStats">
-				{{ props.tweet.quotedByCount }}
+			<template v-if="props.compact">
+				{{ tweet.quotedByCount }}
 			</template>
 		</TweetItemActionsIcon>
 
-		<TweetItemActionsIcon color="red">
+		<TweetItemActionsIcon :active="liked" color="red" @on-click="handleLikeClick">
 			<!-- take the attribute that child component provides and give it to the icon -->
 			<template #icon>
-				<font-awesome-icon icon="fa-regular fa-heart" :size="size"/>
+				<font-awesome-icon v-if="liked" icon="fa-solid fa-heart" :size="size" />
+				<font-awesome-icon v-else icon="fa-regular fa-heart" :size="size" />
 			</template>
 
-			<template v-if="showStats">
-				{{ randNum() }}
+			<template v-if="props.compact">
+				{{ tweet.likedByCount }}
+			</template>
+		</TweetItemActionsIcon>
+
+		<TweetItemActionsIcon :active="bookmarked" color="blue" @on-click="handleBookmarkClick">
+			<!-- take the attribute that child component provides and give it to the icon -->
+			<template #icon>
+				<font-awesome-icon v-if="bookmarked" icon="fa-solid fa-bookmark" :size="size" />
+				<font-awesome-icon v-else icon="fa-regular fa-bookmark" :size="size" />
+			</template>
+
+			<template v-if="props.compact">
+				{{ tweet.bookmarkedByCount }}
 			</template>
 		</TweetItemActionsIcon>
 
 		<TweetItemActionsIcon color="blue">
 			<!-- take the attribute that child component provides and give it to the icon -->
 			<template #icon>
-				<font-awesome-icon icon="fa-solid fa-fire" :size="size"/>
+				<font-awesome-icon icon="fa-solid fa-fire" :size="size" />
 			</template>
 
-			<template v-if="showStats">
+			<template v-if="props.compact">
 				{{ randNum() }}
 			</template>
 		</TweetItemActionsIcon>
 
-		<TweetItemActionsIcon color="blue">
-			<!-- take the attribute that child component provides and give it to the icon -->
-			<template #icon>
-				<font-awesome-icon icon="fa-regular fa-bookmark" :size="size"/>
-			</template>
-
-			<template v-if="showStats">
-				{{ randNum() }}
-			</template>
-		</TweetItemActionsIcon>
-		
 
 	</div>
 </template>
 
 <script setup>
-
 const props = defineProps({
 	tweet: {
 		type: Object,
@@ -69,16 +70,21 @@ const props = defineProps({
 	compact: {
 		type: Boolean,
 		default: false
-	}
+	},
 })
 
-
-const emits = defineEmits(['replyTweet', 'quoteTweet'])
+const emits = defineEmits(['replyTweet', 'quoteTweet', 'likeTweet'])
 
 const emitter = useEmitter()
 
+const user = inject('user')
 
-const showStats = computed(() => props.compact);
+const tweet = ref(props.tweet)
+
+const liked = ref(props.tweet.likedByIds.includes(user.value.id))
+
+const bookmarked = ref(props.tweet.bookmarkedByIds.includes(user.value.id))
+
 
 const size = computed(() => props.compact ? 'sm' : 'lg');
 
@@ -88,11 +94,27 @@ function randNum() {
 
 // use emitter from mitt to emit the event directly to app.vue
 function handleReplyClick() {
-	emitter.$emit('replyTweet', props.tweet)
+	emitter.$emit('replyTweet', tweet.value)
 }
 
 function handleQuoteClick() {
-	emitter.$emit('quoteTweet', props.tweet)
+	emitter.$emit('quoteTweet', tweet.value)
+}
+
+function handleLikeClick() {
+	// console.log('like tweet')
+
+	liked.value = !liked.value
+	liked.value ? tweet.value.likedByCount++ : tweet.value.likedByCount--
+
+	emitter.$emit('likeTweet', tweet.value)
+}
+
+function handleBookmarkClick(){
+	bookmarked.value = !bookmarked.value
+	bookmarked.value ? tweet.value.bookmarkedByCount++ : tweet.value.bookmarkedByCount--
+
+	emitter.$emit('bookmarkTweet', tweet.value)
 }
 
 </script>

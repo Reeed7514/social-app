@@ -86,10 +86,10 @@ const props = defineProps({
 	}
 })
 
-
-const { twitterBorderColor } = useTailwindConfig();
+const { twitterBorderColor } = useTailwindConfig()
 
 const replyToTweetUrl = computed(() => `/status/${props.tweet.replyTo.id}`)
+
 
 
 async function redirect(tweet) {

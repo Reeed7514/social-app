@@ -31,6 +31,8 @@ export default defineEventHandler(async (event) => {
 					author: true
 				}
 			},
+			likedBy: true,
+			bookmarkedBy: true,
 			mediaFiles: true
 		},
 		orderBy: {

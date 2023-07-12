@@ -16,6 +16,14 @@ export const tweetTransformer = (tweet) => {
 		quotedBy: !!tweet.quotedBy ? tweet.quotedBy.map(tweetTransformer) : [],
 		quote: !!tweet.quote ? tweetTransformer(tweet.quote) : null,
 		quotedByCount: !!tweet.quotedBy ? tweet.quotedBy.length : 0,
+
+		likedBy: !!tweet.likedBy ? tweet.likedBy.map(userTransformer) : [],
+		likedByIds: tweet.likedByIds,
+		likedByCount: !!tweet.likedBy ? tweet.likedBy.length : 0,
+
+		bookmarkedBy: !!tweet.bookmarkedBy ? tweet.bookmarkedBy.map(userTransformer) : [],
+		bookmarkedByIds: tweet.bookmarkedByIds,
+		bookmarkedByCount: !!tweet.bookmarkedBy ? tweet.bookmarkedBy.length : 0,
 		
 		postedAt: human(tweet.createdAt)
 	}

@@ -3,12 +3,18 @@ import { getUserById } from "../db/users";
 import { decodeAccessToken } from "../utils/jwt";
 
 export default defineEventHandler(async (event) => {
+
+	// console.log('url', event.node.req.url)
+
 	const endpoints = [
 		'/api/auth/user',
 		'/api/user/tweets',
+		'/api/user/tweets/like',
+		'/api/user/tweets/bookmark',
 		'/api/tweets',
+		'/api/tweets/bookmarks',
 		// dynamic params
-		'/api/tweets/:id'
+		'/api/tweets/:id',
 	];
 
 	const isHandledByThisMiddleware = endpoints.some(endpoint => {
@@ -18,6 +24,7 @@ export default defineEventHandler(async (event) => {
 	})
 
 	if (!isHandledByThisMiddleware) {
+		// console.log('not handled')
 		return
 	}
 
@@ -37,7 +44,10 @@ export default defineEventHandler(async (event) => {
 
 	try {
 		let user = await getUserById(decoded.userId);
-		event.context.auth = { user };
+
+		// console.log('got user in middleware', user)
+
+		event.context.auth = { user }
 	} catch (error) {
 		return
 	}

@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="mt-2 space-y-3">
-			<SidebarLeftTab active>
+			<SidebarLeftTab active path="/">
 				<template v-slot:icon>
 					<HomeIcon />
 				</template>
@@ -21,16 +21,6 @@
 
 			<SidebarLeftTab>
 				<template v-slot:icon>
-					<HashtagIcon />
-				</template>
-				<template v-slot:name>
-					Explore
-				</template>
-			</SidebarLeftTab>
-
-
-			<SidebarLeftTab>
-				<template v-slot:icon>
 					<InboxIcon />
 				</template>
 				<template v-slot:name>
@@ -38,7 +28,7 @@
 				</template>
 			</SidebarLeftTab>
 
-			<SidebarLeftTab>
+			<SidebarLeftTab path="/i/bookmarks">
 				<template v-slot:icon>
 					<BookmarkIcon />
 				</template>
@@ -46,17 +36,6 @@
 					Bookmarks
 				</template>
 			</SidebarLeftTab>
-
-
-			<SidebarLeftTab>
-				<template v-slot:icon>
-					<DocumentTextIcon />
-				</template>
-				<template v-slot:name>
-					Lists
-				</template>
-			</SidebarLeftTab>
-
 
 			<SidebarLeftTab>
 				<template v-slot:icon>
@@ -89,7 +68,7 @@
 			:class="defaultTransition">
 
 			<div class="flex flex-row">
-				<img :src="props.user.profileImage" class="w-10 h-10 rounded-full">
+				<img :src="props.user.profileImage" class="w-10 h-10 rounded-full object-cover">
 				<div class="flex-col hidden ml-2 xl:block">
 					<h1 class="text-sm font-bold text-gray-800 dark:text-white">
 						{{ user.name }}

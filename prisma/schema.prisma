@@ -23,8 +23,22 @@ model User {
   refreshTokens RefreshToken[]
   // how do we find a user's tweets
   // look up the Tweet collection, find a tweet that has a userId that matches the id of current User
+
+  following      User[]   @relation("follows", fields: [followingIds], references: [id])
+  followingIds   String[] @db.ObjectId
+
+  followers      User[]   @relation("follows", fields: [followerIds], references: [id])
+  followerIds    String[] @db.ObjectId
+  
   tweets        Tweet[]
-  mediaFiles    MediaFile[]
+
+  likedTweets    Tweet[]  @relation("likes", fields: [likedTweetsIds], references: [id])
+  likedTweetsIds String[] @db.ObjectId
+
+  bookmarks           Tweet[]  @relation("bookmarks", fields: [bookmarkedTweetsIds], references: [id])
+  bookmarkedTweetsIds String[] @db.ObjectId
+
+  mediaFiles MediaFile[]
 }
 
 model RefreshToken {
@@ -51,9 +65,15 @@ model Tweet {
   // find all tweets that have a replyToId that matches the id of current Tweet
   replies   Tweet[] @relation("replies")
 
-  quote   Tweet?  @relation("quotes", fields: [quoteTweetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  quote        Tweet?  @relation("quotes", fields: [quoteTweetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   quoteTweetId String? @db.ObjectId
-  quotedBy  Tweet[] @relation("quotes")
+  quotedBy     Tweet[] @relation("quotes")
+
+  likedBy    User[]   @relation("likes", fields: [likedByIds], references: [id])
+  likedByIds String[] @db.ObjectId
+
+  bookmarkedBy    User[]   @relation("bookmarks", fields: [bookmarkedByIds], references: [id])
+  bookmarkedByIds String[] @db.ObjectId
 
   // this is to disambiguate relations
   // ratioTo   Tweet?  @relation("ratios", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -67,7 +87,7 @@ model Tweet {
 model MediaFile {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
   url              String
-	// unique id from cloudinary
+  // unique id from cloudinary
   providerPublicId String
 
   createdAt DateTime @default(now())

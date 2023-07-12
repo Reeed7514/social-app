@@ -1,5 +1,5 @@
 <template>
-	<div class="font-Roboto" :class="{ 'dark': darkMode }">
+	<div :class="{ 'dark': darkMode }">
 		<div class="bg-white dark:bg-dim-900">
 			<!-- loading auth -->
 			<LaodingPage v-if="isAuthLoading" />
@@ -32,7 +32,7 @@
 			<UIModal :is-open="postTweetModal" @on-close="handleModalClose">
 				<!-- if its a reply -->
 				<div v-if="replyTweet">
-					<TweetItem :tweet="replyTweet" showThread noActions />
+					<TweetItem :user="user" :tweet="replyTweet" showThread noActions />
 					<!-- thread line -->
 					<div class="flex items-center gap-3">
 						<!-- thread line -->
@@ -47,12 +47,12 @@
 					</div>
 				</div>
 
-				<TweetForm :placeholder="replyTweet ? 'Tweet your reply' : quoteTweet ? 'Add a comment!' : 'What is happening?!'"
+				<TweetForm
+					:placeholder="replyTweet ? 'Tweet your reply' : quoteTweet ? 'Add a comment!' : 'What is happening?!'"
 					:reply-to="replyTweet" :quote="quoteTweet" :user="user" @on-success="handleFormSuccess">
 
 					<!-- the tweet to quote -->
-					<div v-if="quoteTweet" :class="twitterBorderColor"
-						class="border rounded-md p-2 mt-2">
+					<div v-if="quoteTweet" :class="twitterBorderColor" class="border rounded-md p-2 mt-2">
 
 						<TweetQuote :tweet="quoteTweet" />
 
@@ -69,11 +69,14 @@
 const { useAuthUser, initAuth, useAuthLoading, logout } = useAuth();
 
 const user = useAuthUser();
+
+provide('user', user)
+
 const isAuthLoading = useAuthLoading();
 
 const { twitterBorderColor } = useTailwindConfig()
 
-const { usePostTweetModal, closePostTweetModal, openPostTweetModal, openPostTweetModalToReply, openPostTweetModalToQuote, useReplyTweet, useQuoteTweet } = useTweets()
+const { likeTweet, bookmarkTweet, usePostTweetModal, closePostTweetModal, openPostTweetModal, openPostTweetModalToReply, openPostTweetModalToQuote, useReplyTweet, useQuoteTweet } = useTweets()
 
 const darkMode = ref(false);
 
@@ -92,6 +95,22 @@ emitter.$on('replyTweet', (tweet) => {
 
 emitter.$on('quoteTweet', (tweet) => {
 	openPostTweetModalToQuote(tweet)
+})
+
+emitter.$on('likeTweet', async (tweet) => {
+	try {
+		await likeTweet(tweet)
+	} catch (error) {
+		console.log(error)
+	}
+})
+
+emitter.$on('bookmarkTweet', async (tweet) => {
+	try {
+		await bookmarkTweet(tweet)
+	} catch (error) {
+		console.log(error)
+	}
 })
 
 emitter.$on('toggleDarkMode', () => darkMode.value = !darkMode.value)

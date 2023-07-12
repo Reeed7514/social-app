@@ -9,7 +9,7 @@
 				<div class="flex flex-shrink-0">
 					<!-- profile image -->
 					<div class="w-12">
-						<img :src="props.user?.profileImage" alt="" class="inline-block w-10 h-10 rounded-full object-cover">
+						<img :src="user.profileImage" alt="" class="inline-block w-10 h-10 rounded-full object-cover">
 					</div>
 
 					<div class="w-full px-2">
@@ -82,10 +82,6 @@
 
 <script setup>
 const props = defineProps({
-	user: {
-		type: Object,
-		require: true
-	},
 	replyTo: {
 		type: Object,
 		default: null
@@ -103,6 +99,8 @@ const props = defineProps({
 const emits = defineEmits(['onSuccess']);
 
 const twitterBorderColor = useTailwindConfig()
+
+const user = inject('user')
 
 const loading = ref(false);
 

@@ -8,7 +8,8 @@
 
       <div class="flex flex-col">
 
-        <p class="font-semibold text-gray-800 dark:text-white hover:underline cursor-pointer leading-4">{{ props.tweet.author.name }}</p>
+        <p class="font-semibold text-gray-800 dark:text-white hover:underline cursor-pointer leading-4">{{
+          props.tweet.author.name }}</p>
 
         <p class="text-gray-400 leading-4">
           <!-- TODO profile -->
@@ -23,8 +24,7 @@
       {{ props.tweet.text }}
     </p>
 
-    <div v-for="image in props.tweet.mediaFiles" :key="image.id" class="flex mt-2 mb-2"
-      :class="twitterBorderColor">
+    <div v-for="image in props.tweet.mediaFiles" :key="image.id" class="flex mt-2 mb-2" :class="twitterBorderColor">
       <img :src="image.url" class="w-full rounded-lg">
     </div>
 
@@ -42,21 +42,14 @@
       </span>
     </div>
 
-    <div class="py-3 border-b" :class="twitterBorderColor">
-      <span>
-        {{ randNum() }}
-      </span>
+    <div class="py-3" :class="twitterBorderColor">
 
-      <span class="text-gray-500">
-        Likes
-      </span>
+      <TweetInfoStats :tweet="props.tweet" />
+
     </div>
 
 
-    <!-- if we want to reply to this tweet in the modal, then dont show the action icons -->
-    <div v-if="!props.noActions" class="py-3 border-b" :class="twitterBorderColor">
-      <TweetItemActions :tweet="props.tweet" @on-comment-click="handleCommentClick" />
-    </div>
+    
 
   </div>
 </template>
@@ -67,10 +60,6 @@ const props = defineProps({
   tweet: {
     type: Object,
     required: true
-  },
-  noActions: {
-    type: Boolean,
-    default: false
   }
 })
 
@@ -80,13 +69,15 @@ const emitter = useEmitter()
 
 const twitterBorderColor = useTailwindConfig()
 
+
+
+function handleCommentClick() {
+  emitter.$emit('replyTweet', props.tweet)
+}
+
 // 0-1000
 function randNum() {
   return Math.floor(Math.random() * 1000)
-}
-
-function handleCommentClick() {
-	emitter.$emit('replyTweet', props.tweet)
 }
 
 </script>

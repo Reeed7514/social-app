@@ -6,7 +6,18 @@
     <UIInput label="Password" v-model="data.password" placeholder="********" type="password" />
     <UIInput label="Repeat Password" v-model="data.repeatPassword" placeholder="********" type="password" />
 
-    <div v-if="errorMsg" class="flex justify-center">
+    <div @click="imageInput.click()" class="mx-auto w-max border border-slate-200 hover:bg-gray-200 rounded-2xl py-1 px-2 cursor-pointer">
+      Choose your profile picture
+    </div>
+
+    <div class="mx-auto w-max">
+      <img v-if="imageUrl" :src="imageUrl" class="w-20 h-20 object-cover border border-slate-200 rounded-full ring-1">
+    </div>
+
+    <input ref="imageInput" type="file" hidden accept="image/png, image/jpeg, image/gif" @change="handleImageChange">
+
+
+    <div v-if="errorMsg" class="mx-auto">
       <p class="text-red-400">
         {{ errorMsg }}
       </p>
@@ -31,10 +42,16 @@ const data = reactive({
   loading: false
 })
 
+const imageInput = ref()
+
+const selectedProfileImage = ref(null)
+
+const imageUrl = ref(null)
+
 const errorMsg = ref(null)
 
 const isButtonDisabled = computed(() => {
-  return (!data.username || !data.password || !data.name || !data.email || !data.repeatPassword) || data.loading
+  return (!data.username || !data.password || !data.name || !data.email || !data.repeatPassword || !selectedProfileImage.value) || data.loading
 })
 
 const { register } = useAuth()
@@ -48,7 +65,8 @@ async function handleRegister() {
       name: data.name,
       email: data.email,
       password: data.password,
-      repeatPassword: data.repeatPassword
+      repeatPassword: data.repeatPassword,
+      profileImage: selectedProfileImage.value
     })
 
     emits('goToLogin')
@@ -60,6 +78,23 @@ async function handleRegister() {
   } finally {
     data.loading = false;
   }
+}
+
+function handleImageChange(event) {
+
+  // console.log(event.target.files[0])
+
+  const file = event.target.files[0]
+
+  selectedProfileImage.value = file
+
+  const reader = new FileReader()
+
+  reader.onload = (e) => {
+    imageUrl.value = e.target.result
+  }
+
+  reader.readAsDataURL(file)
 }
 
 

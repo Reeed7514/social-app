@@ -41,10 +41,63 @@ export default () => {
 
 	}
 
+	const likeTweet = (tweet) => {
+		return new Promise(async (resolve, reject) => {
+
+			try {
+
+				await useFetchApi(`/api/user/tweets/like`, {
+					method: 'POST',
+					body: { tweet }
+				})
+
+				resolve(true)
+
+			} catch (error) {
+				reject(error)
+			}
+
+		})
+	}
+
+	const bookmarkTweet = (tweet) => {
+		return new Promise(async (resolve, reject) => {
+
+			try {
+
+				await useFetchApi(`/api/user/tweets/bookmark`, {
+					method: 'POST',
+					body: { tweet }
+				})
+
+				resolve(true)
+
+			} catch (error) {
+				reject(error)
+			}
+
+		})
+	}
+
 	const getTweets = (params = {}) => {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const response = await useFetchApi('/api/tweets', {
+					method: 'GET',
+					params
+				});
+
+				resolve(response);
+			} catch (error) {
+				reject(error);
+			}
+		})
+	}
+
+	const getUserBookmarks = (params = {}) => {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const response = await useFetchApi('/api/tweets/bookmarks', {
 					method: 'GET',
 					params
 				});
@@ -98,7 +151,10 @@ export default () => {
 
 	return {
 		postTweet,
+		likeTweet,
+		bookmarkTweet,
 		getTweets,
+		getUserBookmarks,
 		getTweetById,
 		usePostTweetModal,
 		openPostTweetModal,

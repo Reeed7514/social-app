@@ -27,12 +27,17 @@
 
 		</TweetInfo>
 
+		<!-- if we want to reply to this tweet in the modal, then dont show the action icons -->
+    <div class="py-3 border-y" :class="twitterBorderColor">
+      <TweetItemActions :tweet="props.tweet" />
+    </div>
+
 		<div class="border-b mx-4 mt-4 pb-4" :class="twitterBorderColor">
-			<TweetForm placeholder="Tweet your reply" :user="props.user" :reply-to="props.tweet"
+			<TweetForm placeholder="Tweet your reply"  :reply-to="props.tweet"
 				@on-success="handleFormSuccess" />
 		</div>
 
-		<TweetListFeed :tweets="replies" />
+		<TweetListFeed  :tweets="replies" />
 
 	</div>
 </template>
@@ -40,10 +45,6 @@
 <script setup>
 const props = defineProps({
 	tweet: {
-		type: Object,
-		required: true
-	},
-	user: {
 		type: Object,
 		required: true
 	}
